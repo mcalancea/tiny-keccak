@@ -147,7 +147,15 @@ mod keccakf;
     feature = "tuple_hash",
     feature = "parallel_hash"
 ))]
-pub use keccakf::keccakf;
+
+cfg_if::cfg_if! {
+    if #[cfg(all(target_os = "zkvm", target_arch = "riscv32"))] {
+        mod scroll;
+        pub use scroll::keccakf;
+    } else {
+        pub use keccakf::keccakf;
+    }
+}
 
 #[cfg(feature = "k12")]
 mod k12;
